@@ -32,9 +32,9 @@ impl EventHandler for Handler {
         println!("[MSG] {}", msg.content);
         let shard = ctx.shard_id;
         let result = match msg.content.to_lowercase().as_str() {
-            "!ping" => ping(ctx, msg).await,
-            "!dm" => dm(ctx, msg).await,
-            "hi" | "hello" => hello(ctx, msg).await,
+            "!ping" => ping(&ctx, &msg).await,
+            "!dm" => dm(&ctx, &msg).await,
+            "hi" | "hello" => hello(&ctx, &msg).await,
             "!emoji" => emoji(&ctx, &msg).await,
             _ => Ok(())
         };
@@ -48,18 +48,18 @@ impl EventHandler for Handler {
     }
 }
 
-async fn ping(ctx: Context, msg: Message) -> Result<(), serenity::Error> {
+async fn ping(ctx: &Context, msg: &Message) -> Result<(), serenity::Error> {
     let result = msg.channel_id
         .say(&ctx.http, format!("Pong from shard {}", ctx.shard_id)).await;
     return_exception!(result)
 }
 
-async fn dm(ctx: Context, msg: Message) -> Result<(), serenity::Error> {
+async fn dm(ctx: &Context, msg: &Message) -> Result<(), serenity::Error> {
     let res = msg.author.dm(&ctx, |m| m.content("No DMs for you")).await;
     return_exception!(res)
 }
 
-async fn hello(ctx: Context, msg: Message) -> Result<(), serenity::Error> {
+async fn hello(ctx: &Context, msg: &Message) -> Result<(), serenity::Error> {
     let response = serenity::utils::MessageBuilder::new()
         .push("Hello, ")
         .push(&msg.author)

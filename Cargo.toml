@@ -12,7 +12,7 @@ edition = "2018"
 [dependencies.serenity]
 version = "^0.10"
 default-features = false
-features = ["client", "gateway", "rustls_backend", "model", "utils", "framework", "standard_framework"]
+features = ["client", "gateway", "rustls_backend", "model", "utils"]
 
 [dependencies.tokio]
 version = "*"
