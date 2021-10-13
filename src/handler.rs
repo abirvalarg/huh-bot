@@ -8,6 +8,7 @@ use serenity::{
         channel::Message
     }
 };
+use regex::Regex;
 
 pub struct Handler;
 
@@ -36,7 +37,15 @@ impl EventHandler for Handler {
             "!dm" => dm(&ctx, &msg).await,
             "hi" | "hello" => hello(&ctx, &msg).await,
             "!emoji" => emoji(&ctx, &msg).await,
-            _ => Ok(())
+            _ => {
+                let expr = Regex::new("[-,.:'\" ]vim[ .,:'\"\n]").unwrap();
+                if expr.is_match(format!(" {} ", msg.content).as_str()) {
+                    let res = vim(&ctx, &msg).await;
+                    return_exception!(res)
+                } else {
+                    Ok(())
+                }
+            }
         };
         if let Err(err) = result {
             eprintln!("[{}] Error: {}", shard, err);
@@ -74,5 +83,10 @@ async fn emoji(ctx: &Context, msg: &Message) -> Result<(), serenity::Error> {
         .push("<:3dkek:896069079826305035>")
         .build();
     let res = msg.channel_id.say(&ctx.http, resp).await;
+    return_exception!(res)
+}
+
+async fn vim(ctx: &Context, msg: &Message) -> Result<(), serenity::Error> {
+    let res = msg.channel_id.say(&ctx.http, "vim )").await;
     return_exception!(res)
 }
