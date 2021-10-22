@@ -33,6 +33,7 @@ impl EventHandler for Handler {
         println!("[MSG] {}", msg.content);
         let shard = ctx.shard_id;
         let result = match msg.content.to_lowercase().as_str() {
+            "!help" => help(&ctx, &msg).await,
             "!ping" => ping(&ctx, &msg).await,
             "!dm" => dm(&ctx, &msg).await,
             "hi" | "hello" => hello(&ctx, &msg).await,
@@ -56,6 +57,12 @@ impl EventHandler for Handler {
         println!("{} is ready", ready.user.name);
     }
 }
+
+async fn help(ctx: &Context, msg: &Message) -> Result<(), serenity::Error> {
+    let result = msg.reply(&ctx.http, "There's no hope for help for us").await;
+    return_exception!(result)
+}
+
 
 async fn ping(ctx: &Context, msg: &Message) -> Result<(), serenity::Error> {
     let result = msg.channel_id
